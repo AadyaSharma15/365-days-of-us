@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>365 Days of Us — Our 1st Anniversary Adventure</title>
+  <meta name="description" content="12 months. 12 little surprises. A thousand memories. An interactive anniversary treasure hunt.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+  
+  <!-- Google Fonts: Romantic Serif & Clean Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Ambient Particle Canvas for Floating Stars and Petals -->
+  <canvas id="ambient-canvas" class="ambient-canvas" aria-hidden="true"></canvas>
+
+  <!-- ROMANTIC LOGIN / GATEKEEPER SCREEN -->
+  <div class="login-overlay" id="login-overlay">
+    <div class="login-card">
+      <div class="login-badge">
+        <span class="sparkle">✦</span>
+        <span>Boyfriend Verification Gate</span>
+        <span class="sparkle">✦</span>
+      </div>
+
+      <h1 class="login-title">Only for My Cookie 🍪</h1>
+      <p class="login-subtitle">
+        This little universe holds 365 days of our memories, jokes, and surprises. 
+        Before you can enter, you must pass our little love test. Prove it's really you!
+      </p>
+
+      <form class="login-form" id="login-form" onsubmit="return false;">
+        <!-- Username Field -->
+        <div class="login-field-group">
+          <label for="login-username" class="login-label">
+            <span>What sweet treat do I always call you?</span>
+            <small class="login-sublabel">(Username)</small>
+          </label>
+          <div class="login-input-wrapper">
+            <span class="login-input-icon">🍪</span>
+            <input 
+              type="text" 
+              id="login-username" 
+              class="login-input" 
+              placeholder="Your sweetest nickname..." 
+              autocomplete="off"
+              spellcheck="false"
+              required 
+            />
+          </div>
+          <button type="button" class="login-hint-toggle" id="btn-hint-username">
+            💡 Need a username hint?
+          </button>
+          <div class="login-hint-box hidden" id="hint-box-username">
+            Hint: It's sweet, baked with love, and chocolate-chipped... my favorite name for you! 🍪
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="login-field-group">
+          <label for="login-password" class="login-label">
+            <span>How do we say "I love you"?</span>
+            <small class="login-sublabel">(Password)</small>
+          </label>
+          <div class="login-input-wrapper">
+            <span class="login-input-icon">💕</span>
+            <input 
+              type="password" 
+              id="login-password" 
+              class="login-input" 
+              placeholder="Our secret magic word..." 
+              autocomplete="off"
+              spellcheck="false"
+              required 
+            />
+            <button type="button" class="btn-eye-toggle" id="btn-toggle-pwd" title="Show or hide password" aria-label="Toggle password visibility">
+              👁️
+            </button>
+          </div>
+          <button type="button" class="login-hint-toggle" id="btn-hint-password">
+            💡 Need a password hint?
+          </button>
+          <div class="login-hint-box hidden" id="hint-box-password">
+            Hint: Our special magic word that means "I love you" with all our hearts! (Starts with "a-n-i...") 💕
+          </div>
+        </div>
+
+        <!-- Feedback alert -->
+        <div class="login-feedback" id="login-feedback" aria-live="polite"></div>
+
+        <button type="submit" class="btn btn-primary btn-large btn-login-submit" id="btn-login-submit">
+          <span>Enter Our Universe</span>
+          <span class="btn-arrow">🗝️✨</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <header class="site-header" id="site-header">
+    <div class="header-inner">
+      <a href="#hero" class="brand-link" id="brand-link">
+        <span class="brand-sparkle">✨</span>
+        <span class="brand-text">365 Days of Us</span>
+      </a>
+
+      <div class="header-controls">
+        <!-- Logged In User Pill -->
+        <button class="user-pill" id="header-user-btn" title="Logged in as Cookie (Click to relock/logout)">
+          <span class="user-avatar">🍪</span>
+          <span class="user-name">Cookie</span>
+        </button>
+
+        <!-- Quick Progress Pill -->
+        <button class="progress-pill" id="header-progress-pill" title="Click to view portals" aria-label="View portal progress">
+          <span class="pill-dot"></span>
+          <span id="header-progress-text">0 / 12 Unlocked</span>
+        </button>
+
+        <!-- Sound FX Toggle -->
+        <button class="audio-toggle-btn" id="audio-toggle-btn" title="Toggle sound effects" aria-label="Toggle sound effects">
+          <span class="audio-icon" id="audio-icon">🔔</span>
+          <span class="audio-label" id="audio-label">Sound On</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO SECTION -->
+    <section class="hero-section" id="hero">
+      <div class="hero-container">
+        
+        <div class="hero-celestial-badge">
+          <span class="badge-sparkle-left">✦</span>
+          <span>Our First Anniversary Special</span>
+          <span class="badge-sparkle-right">✦</span>
+        </div>
+
+        <h1 class="hero-title">
+          <span class="hero-title-main">365 Days of Us</span>
+          <span class="hero-tagline">12 months. 12 little surprises. A thousand memories.</span>
+        </h1>
+
+        <div class="hero-card">
+          <p class="hero-intro">
+            Somewhere between all the little moments, the silly conversations, 
+            the laughter, and everything in between, we made a year of memories. 
+            I collected a few of them for you. Ready to explore?
+          </p>
+
+          <div class="hero-metrics">
+            <div class="metric-item">
+              <span class="metric-num">12</span>
+              <span class="metric-label">Portals to Solve</span>
+            </div>
+            <div class="metric-divider">✦</div>
+            <div class="metric-item">
+              <span class="metric-num">12</span>
+              <span class="metric-label">Little Surprises</span>
+            </div>
+            <div class="metric-divider">✦</div>
+            <div class="metric-item">
+              <span class="metric-num">365</span>
+              <span class="metric-label">Days of Love</span>
+            </div>
+            <div class="metric-divider">✦</div>
+            <div class="metric-item">
+              <span class="metric-num">1</span>
+              <span class="metric-label">Final Letter</span>
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <button class="btn btn-primary btn-large glow-hover" id="btn-start-adventure">
+              <span>Begin our adventure</span>
+              <span class="btn-arrow">✨</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="scroll-hint">
+          <span class="scroll-text">Explore the 12 portals</span>
+          <div class="scroll-chevron">↓</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PORTAL SELECTION SECTION -->
+    <section class="portals-section" id="portals-section">
+      <div class="portals-container">
+        
+        <!-- Section Header -->
+        <div class="section-header">
+          <span class="section-eyebrow">The Multiverse of Us</span>
+          <h2 class="section-title">Choose a Portal to Discover</h2>
+          <p class="section-subtitle">
+            Enter each portal, solve its riddle with a single clue word, and unlock what I've prepared for you.
+            Portals 01 to 11 can be explored in any order — solve all 11 to reveal the final anniversary secret.
+          </p>
+        </div>
+
+        <!-- Progress Tracker Bar -->
+        <div class="journey-tracker-card">
+          <div class="tracker-top">
+            <div class="tracker-info">
+              <span class="tracker-label">Your Discovery Journey</span>
+              <span class="tracker-count" id="tracker-counter-text">0 of 12 portals unlocked</span>
+            </div>
+            <div class="tracker-percentage" id="tracker-percentage-text">0%</div>
+          </div>
+          
+          <div class="tracker-bar-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="12" id="tracker-progressbar">
+            <div class="tracker-bar-fill" id="tracker-bar-fill" style="width: 0%;"></div>
+          </div>
+
+          <div class="tracker-status-message" id="tracker-status-message">
+            ✨ Tap any available portal below to read its riddle!
+          </div>
+        </div>
+
+        <!-- Portal Filter Controls -->
+        <div class="portal-filters" role="tablist">
+          <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All Portals (12)</button>
+          <button class="filter-btn" data-filter="unsolved" role="tab" aria-selected="false">Available to Solve</button>
+          <button class="filter-btn" data-filter="completed" role="tab" aria-selected="false">Unlocked Gifts ✨</button>
+        </div>
+
+        <!-- The 12 Portals Grid -->
+        <div class="portals-grid" id="portals-grid">
+          <!-- Populated dynamically by script.js -->
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- MODAL 1: INDIVIDUAL RIDDLE MODAL                         -->
+  <!-- ======================================================== -->
+  <div class="modal-backdrop" id="riddle-modal" aria-hidden="true" role="dialog" aria-labelledby="riddle-modal-title">
+    <div class="modal-card riddle-modal-card">
+      <button class="modal-close-btn" id="riddle-modal-close" aria-label="Close riddle window">✕</button>
+      
+      <div class="portal-modal-header">
+        <div class="portal-badge-pill" id="riddle-portal-badge">PORTAL 01</div>
+      </div>
+
+      <div class="riddle-visual-emblem" id="riddle-visual-emblem">
+        <!-- Themed animated SVG emblem injected here -->
+      </div>
+
+      <div class="riddle-content-box">
+        <span class="quote-mark">“</span>
+        <p class="riddle-text" id="riddle-text">
+          <!-- Riddle question injected here -->
+        </p>
+        <span class="quote-mark quote-mark-close">”</span>
+      </div>
+
+      <!-- Clue input form -->
+      <form class="riddle-form" id="riddle-form" onsubmit="return false;">
+        <label for="riddle-answer-input" class="riddle-input-label">Enter the clue word to unlock:</label>
+        <div class="input-wrapper">
+          <input 
+            type="text" 
+            id="riddle-answer-input" 
+            class="riddle-answer-input" 
+            placeholder="Type your answer here..." 
+            autocomplete="off" 
+            spellcheck="false"
+            required
+          />
+          <button type="submit" class="btn btn-primary btn-unlock" id="btn-submit-answer">
+            <span>Unlock</span>
+            <span class="btn-icon">🗝️</span>
+          </button>
+        </div>
+
+        <!-- Feedback message (error / success) -->
+        <div class="feedback-msg" id="riddle-feedback" aria-live="polite"></div>
+      </form>
+
+      <!-- Hint Accordion -->
+      <div class="hint-accordion">
+        <button class="hint-toggle-btn" id="btn-toggle-hint" type="button">
+          <span class="hint-icon">💡</span>
+          <span>Need a gentle hint?</span>
+          <span class="hint-caret" id="hint-caret">▾</span>
+        </button>
+        <div class="hint-drawer" id="hint-drawer">
+          <p class="hint-text" id="hint-text">
+            <!-- Hint text injected here -->
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL 2: GIFT REVEAL MODAL                               -->
+  <!-- ======================================================== -->
+  <div class="modal-backdrop" id="reveal-modal" aria-hidden="true" role="dialog" aria-labelledby="reveal-gift-title">
+    <div class="modal-card reveal-modal-card">
+      <button class="modal-close-btn" id="reveal-modal-close" aria-label="Close gift reveal window">✕</button>
+
+      <div class="reveal-celebration-banner">
+        <span class="sparkle-anim">✨</span>
+        <span class="reveal-top-tag">You figured it out!</span>
+        <span class="sparkle-anim">✨</span>
+      </div>
+
+      <p class="reveal-tagline">Here's a little something I picked just for you.</p>
+
+      <div class="reveal-media-container" id="reveal-media-container">
+        <!-- Custom photo or bespoke animated SVG illustration -->
+      </div>
+
+      <div class="reveal-content-body">
+        <div class="reveal-badge-row">
+          <span class="reveal-portal-id" id="reveal-portal-id">PORTAL 01</span>
+        </div>
+
+        <h3 class="reveal-gift-title" id="reveal-gift-title">Crochet Bouquet</h3>
+
+        <div class="reveal-message-card">
+          <div class="message-heart-icon">💖</div>
+          <p class="reveal-message-text" id="reveal-message-text">
+            <!-- Personalized gift message injected here -->
+          </p>
+        </div>
+
+        <div class="physical-gift-note" id="reveal-physical-note">
+          <span class="note-gift-icon">🎁</span>
+          <span><strong>Physical Gift:</strong> This little surprise is wrapped and waiting for you in real life!</span>
+        </div>
+
+        <div class="arriving-soon-note" id="reveal-arriving-note" style="display: none;">
+          <span class="note-truck-icon">📦</span>
+          <span id="reveal-arriving-text">
+            <strong>Coming Soon:</strong> Your physical surprise hasn't arrived in the mail yet, but until it arrives, I made this special keepsake for you! The rest will be given to you as soon as it arrives! 🥰
+          </span>
+        </div>
+      </div>
+
+      <div class="reveal-actions">
+        <button class="btn btn-secondary" id="btn-reveal-back">
+          <span>← Back to Portals</span>
+        </button>
+        <button class="btn btn-primary" id="btn-reveal-next">
+          <span>Next Portal →</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL 3: FINAL ANNIVERSARY LETTER EXPERIENCE (PORTAL 12)  -->
+  <!-- ======================================================== -->
+  <div class="final-letter-overlay" id="final-letter-overlay" aria-hidden="true">
+    <div class="final-letter-backdrop"></div>
+    
+    <div class="final-experience-wrapper" id="final-experience-wrapper">
+      <button class="modal-close-btn final-close-btn" id="final-overlay-close" aria-label="Close letter view">✕</button>
+
+      <!-- Pre-Envelope Emotional Reveal Intro -->
+      <div class="final-intro-view" id="final-intro-view">
+        <div class="final-constellation-icon">✨ ✦ 🌌 ✦ ✨</div>
+        <h2 class="final-intro-title">You've Unlocked Every Portal</h2>
+        <div class="final-intro-quote-card">
+          <p class="final-intro-quote-line1">
+            “You've found all the little things I wanted you to have. But there's one thing I saved for last. Some feelings deserve more than a screen.”
+          </p>
+          <p class="final-intro-quote-line2">
+            One last thing, for you.
+          </p>
+        </div>
+
+        <!-- 3D Interactive Envelope Container -->
+        <div class="envelope-scene">
+          <div class="envelope" id="envelope-box" role="button" tabindex="0" aria-label="Click to break seal and open anniversary letter">
+            <div class="envelope-flap" id="envelope-flap"></div>
+            <div class="envelope-pocket"></div>
+            <div class="wax-seal" id="wax-seal">
+              <span class="seal-text">365</span>
+              <span class="seal-heart">❤</span>
+            </div>
+            <div class="letter-peek" id="letter-peek">
+              <div class="peek-line"></div>
+              <div class="peek-line short"></div>
+            </div>
+          </div>
+          <p class="envelope-instruction">
+            <span class="touch-icon">👆</span> Tap the wax seal to open your letter
+          </p>
+        </div>
+      </div>
+
+      <!-- Unfolded Parchment Letter View -->
+      <div class="unfolded-letter-view hidden" id="unfolded-letter-view">
+        <div class="letter-parchment" id="letter-parchment">
+          
+          <div class="letter-header-decor">
+            <span class="letter-filigree">❦</span>
+            <span class="letter-header-tag">365 Days of Us • Our 1st Anniversary</span>
+            <span class="letter-filigree">❦</span>
+          </div>
+
+          <h3 class="letter-salutation" id="letter-salutation">To My Favorite Person,</h3>
+
+          <div class="letter-body-paragraphs" id="letter-body">
+            <!-- Letter paragraphs populated from config -->
+          </div>
+
+          <div class="letter-signature-block">
+            <p class="letter-closing">Forever & always,</p>
+            <p class="letter-signature" id="letter-signature">Your Love ❤️</p>
+            <p class="letter-date" id="letter-date">365 Days Down, A Lifetime to Go</p>
+          </div>
+
+          <div class="letter-footer-actions">
+            <button class="btn btn-secondary" id="btn-view-all-gifts-summary">
+              <span>🎁 Review All 12 Surprises</span>
+            </button>
+            <button class="btn btn-primary" id="btn-return-home">
+              <span>🌟 Return to Our Universe</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL 4: 12 GIFTS SUMMARY / MEMORY BOX                   -->
+  <!-- ======================================================== -->
+  <div class="modal-backdrop" id="summary-modal" aria-hidden="true" role="dialog" aria-labelledby="summary-modal-title">
+    <div class="modal-card summary-modal-card">
+      <button class="modal-close-btn" id="summary-modal-close" aria-label="Close summary">✕</button>
+
+      <div class="summary-header">
+        <h3 id="summary-modal-title" class="summary-title">Our Anniversary Treasure Box 🎁</h3>
+        <p class="summary-subtitle">All 12 little surprises gathered in our first 365 days.</p>
+      </div>
+
+      <div class="summary-list" id="summary-list">
+        <!-- Rendered by script.js -->
+      </div>
+
+      <div class="summary-actions">
+        <button class="btn btn-primary" id="btn-summary-done">Close Treasure Box</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL 5: DEVELOPER & TESTING MODE (HIDDEN / DISCRETE)    -->
+  <!-- ======================================================== -->
+  <div class="modal-backdrop" id="dev-modal" aria-hidden="true" role="dialog" aria-labelledby="dev-modal-title">
+    <div class="modal-card dev-modal-card">
+      <button class="modal-close-btn" id="dev-modal-close" aria-label="Close test controls">✕</button>
+      
+      <div class="dev-header">
+        <span class="dev-badge">Testing & Preparation Mode</span>
+        <h3 id="dev-modal-title" class="dev-title">Developer & Testing Controls</h3>
+        <p class="dev-desc">
+          Use these controls to test all riddles, reveals, and the final letter without manually typing every clue. 
+          This panel is hidden from normal visitors (press <kbd>Ctrl+Shift+D</kbd> or use the discrete footer link).
+        </p>
+      </div>
+
+      <div class="dev-actions-grid">
+        <button class="btn btn-dev" id="btn-dev-unlock-all-11">
+          <span>🔓 Unlock All Portals (01–11)</span>
+          <small>Unlocks first 11 portals to test Portal 12 unlocking</small>
+        </button>
+
+        <button class="btn btn-dev" id="btn-dev-solve-all-12">
+          <span>🎉 Solve All 12 Portals & Open Letter</span>
+          <small>Instantly completes every portal and opens the finale</small>
+        </button>
+
+        <button class="btn btn-dev" id="btn-dev-relock">
+          <span>🔒 Relock Website (Show Login Screen)</span>
+          <small>Test the Cookie & Animini login gate again</small>
+        </button>
+
+        <button class="btn btn-dev" id="btn-dev-toggle-time">
+          <span id="btn-dev-toggle-time-text">⏱️ Bypass Time Locks: OFF</span>
+          <small>Toggle to test all portals right away without waiting for hourly schedule</small>
+        </button>
+
+        <button class="btn btn-dev btn-dev-danger" id="btn-dev-reset-progress">
+          <span>🔄 Reset All Progress</span>
+          <small>Clears localStorage and resets website to fresh state</small>
+        </button>
+      </div>
+
+      <div class="dev-section-title">Jump Directly to Any Portal:</div>
+      <div class="dev-portals-picker" id="dev-portals-picker">
+        <!-- Quick portal jump buttons 1-12 rendered by script.js -->
+      </div>
+
+      <div class="dev-answers-table-wrapper">
+        <div class="dev-section-title">Riddle Reference & Answers:</div>
+        <table class="dev-answers-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Gift Name</th>
+              <th>Correct Answer</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="dev-answers-tbody">
+            <!-- Rows rendered by script.js -->
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="footer-love-text">
+        Created with all my heart for our 1st Anniversary • 365 Days of Us ❤️
+      </p>
+      <div class="footer-links">
+        <button class="footer-dev-btn" id="footer-dev-btn" title="Open testing panel">
+          ⚙️ Testing Mode
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Confetti Canvas overlay -->
+  <canvas id="confetti-canvas" class="confetti-canvas" aria-hidden="true"></canvas>
+
+  <script src="script.js"></script>
+</body>
+</html>
